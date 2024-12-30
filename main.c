@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
 
     free(msg_in);
 
-    sleep(2);
+    sleep(60);
   }
 
   return 0;
