@@ -40,6 +40,8 @@ int main(int argc, char *argv[]){
   CURL *curl;
   CURLcode res;
 
+  int is_cascade = 0;
+
   while (1){
 
     char *msg_in = calloc(1,sizeof(char));
@@ -61,7 +63,9 @@ int main(int argc, char *argv[]){
     }
 
     // printf("curl: %s\n", msg_in);
-    if (strstr(msg_in, "Void Cascade")){
+    char *p = strstr(msg_in, "Void Cascade");
+    if (p && !is_cascade){
+      is_cascade = 1;
       // printf("VOID CASCADE\n");
 
       notify_init("CASCADE");
@@ -69,16 +73,24 @@ int main(int argc, char *argv[]){
                                                        "Omnia void cascade just dropped",
                                                        0);
       notify_notification_set_timeout(n, 5000); // 5 seconds
+      notify_notification_show(n, 0);
 
-      // if (!notify_notification_show(n, 0)) 
-      // {
-      //   printf("failed\n");
-      // }
+    }
+    else if (!p && is_cascade){
+      is_cascade = 0;
+      // printf("VOID CASCADE\n");
+
+      notify_init("NO CASCADE");
+      NotifyNotification* m = notify_notification_new ("No more cascade for you",
+                                                       "Too late now :(",
+                                                       0);
+      notify_notification_set_timeout(m, 5000); // 5 seconds
+      notify_notification_show(m, 0);
     }
 
     free(msg_in);
 
-    sleep(60);
+    sleep(2);
   }
 
   return 0;
